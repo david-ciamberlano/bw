@@ -1,0 +1,76 @@
+version: '3.4'
+services:
+  bw-share:
+    image: alfresco-share-bw:development
+    build:
+      dockerfile: ./Dockerfile
+      context: ../../../bw-share-docker/target
+    environment:
+      CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8888"
+      REPO_HOST: bw-acs
+      REPO_PORT: 8080
+    ports:
+      - "${share.port}:8080"
+      - "${share.debug.port}:8888"
+  bw-acs:
+    image: alfresco-content-services-bw:development
+    build:
+      dockerfile: ./Dockerfile
+      context: ../../../bw-platform-docker/target
+    environment:
+      JAVA_TOOL_OPTIONS: "${keystore.settings}"
+      JAVA_OPTS: "
+        -Dsolr.secureComms=secret
+        -Dsolr.sharedSecret=secret
+        -Dmessaging.broker.url=\"failover:(nio://bw-activemq:61616)?timeout=3000&jms.useCompression=true\"
+        "
+      CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8888"
+    ports:
+      - "${acs.port}:8080"
+      - "${acs.debug.port}:8888"
+    volumes:
+      - bw-acs-volume:/usr/local/tomcat/alf_data
+    depends_on:
+      - bw-postgres
+  bw-postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_DB: alfresco
+      POSTGRES_USER: alfresco
+      POSTGRES_PASSWORD: alfresco
+    command: postgres -c max_connections=300 -c log_min_messages=LOG
+    ports:
+      - "${postgres.port}:5432"
+    volumes:
+      - bw-db-volume:/var/lib/postgresql/data
+  bw-ass:
+    image: alfresco/alfresco-search-services:2.0.3
+    environment:
+      SOLR_ALFRESCO_HOST: bw-acs
+      SOLR_ALFRESCO_PORT: 8080
+      SOLR_SOLR_HOST: bw-ass
+      SOLR_SOLR_PORT: 8983
+      ALFRESCO_SECURE_COMMS: "secret"
+      JAVA_TOOL_OPTIONS: "-Dalfresco.secureComms.secret=secret"
+      SOLR_CREATE_ALFRESCO_DEFAULTS: alfresco,archive
+    ports:
+      - "8983:8983"
+    volumes:
+      - bw-ass-volume:/opt/alfresco-search-services/contentstore
+      - bw-ass-volume:/opt/alfresco-search-services/data
+  bw-activemq:
+      image: alfresco/alfresco-activemq:5.16.1
+      mem_limit: 1g
+      ports:
+        - 8161:8161 # Web Console
+        - 5672:5672 # AMQP
+        - 61616:61616 # OpenWire
+        - 61613:61613 # STOMP
+
+volumes:
+  bw-acs-volume:
+    external: true
+  bw-db-volume:
+    external: true
+  bw-ass-volume:
+    external: true
