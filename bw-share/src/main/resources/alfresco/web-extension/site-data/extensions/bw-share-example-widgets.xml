@@ -5,15 +5,9 @@
       <version>1.0</version>
       <auto-deploy>true</auto-deploy>
       <configurations>
-        <config evaluator="string-compare" condition="WebFramework" replace="false">
-          <web-framework>
-            <dojo-pages>
-              <packages>
-                <package name="tutorials" location="resources/bw-share/js/tutorials"/>
-              </packages>
-            </dojo-pages>
-          </web-framework>
-        </config>
+
+
+
       </configurations>
     </module>
   </modules>

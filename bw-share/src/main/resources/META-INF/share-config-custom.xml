@@ -416,5 +416,25 @@
         </forms>
     </config>
 
+    <!-- Actions -->
+    <config evaluator="string-compare" condition="DocLibActions">
+        <actions>
+            <action id="sendToBW" type="javascript" label="Send to Intelligent Capture" icon="brainware">
+                <param name="function">onActionFormDialog</param>
+                <param name="itemKind">action</param>
+                <param name="itemId">sendToBW</param>
+                <param name="mode">create</param>
+                <param name="destination">{node.nodeRef}</param>
+                <param name="successMessage">Success</param>
+                <param name="failureMessage">Failure</param>
+            </action>
+        </actions>
+        <actionGroups>
+            <actionGroup id="document-browse">
+                <action index="10" id="sendToBW">
+                </action>
+            </actionGroup>
+        </actionGroups>
+    </config>
 
 </alfresco-config>

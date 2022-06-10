@@ -37,9 +37,25 @@
         <property name="nodeLocatorService" ref="nodeLocatorService" />
     </bean>
 
-    <bean id="import-BW" class="com.alfresco.brainware.ImportFromBW" parent="action-executer">
-        <property name="serviceRegistry">
-            <ref bean="ServiceRegistry" />
+    <bean id="importBW" class="com.alfresco.brainware.ImportInvoiceFromBW" parent="action-executer">
+        <property name="fileFolderService">
+            <ref bean="FileFolderService" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+        <property name="mimetypeService">
+            <ref bean="MimetypeService" />
+        </property>
+
+    </bean>
+
+    <bean id="sendToBW" class="com.alfresco.brainware.SendInvoiceToBW" parent="action-executer">
+        <property name="fileFolderService">
+            <ref bean="FileFolderService" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService" />
         </property>
     </bean>
 
