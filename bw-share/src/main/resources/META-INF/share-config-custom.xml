@@ -419,14 +419,15 @@
     <!-- Actions -->
     <config evaluator="string-compare" condition="DocLibActions">
         <actions>
-            <action id="sendToBW" type="javascript" label="Send to Intelligent Capture" icon="brainware">
+            <action id="sendToBW" type="javascript" label="Request Intelligent Capture" icon="document-assign-workflow">
                 <param name="function">onActionFormDialog</param>
                 <param name="itemKind">action</param>
                 <param name="itemId">sendToBW</param>
                 <param name="mode">create</param>
                 <param name="destination">{node.nodeRef}</param>
-                <param name="successMessage">Success</param>
+                <param name="successMessage">Intelligent capture in progress</param>
                 <param name="failureMessage">Failure</param>
+                <evaluator negate="true">evaluator.doclib.action.customTypes</evaluator>
             </action>
         </actions>
         <actionGroups>
