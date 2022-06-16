@@ -419,7 +419,7 @@
     <!-- Actions -->
     <config evaluator="string-compare" condition="DocLibActions">
         <actions>
-            <action id="sendToBW" type="javascript" label="Request Intelligent Capture" icon="document-assign-workflow">
+            <action id="sendToBW" type="javascript" label="Request Intelligent Capture" icon="brainware2">
                 <param name="function">onActionFormDialog</param>
                 <param name="itemKind">action</param>
                 <param name="itemId">sendToBW</param>

@@ -47,7 +47,7 @@
         <property name="mimetypeService">
             <ref bean="MimetypeService" />
         </property>
-
+        <property name="xmlMappingNode" value="${brainware.xmlMapping}"/>
     </bean>
 
     <bean id="sendToBW" class="com.alfresco.brainware.SendInvoiceToBW" parent="action-executer">
@@ -57,6 +57,7 @@
         <property name="nodeService">
             <ref bean="NodeService" />
         </property>
+        <property name="exportFolder" value="${brainware.exportFolder}"/>
     </bean>
 
 </beans>

@@ -27,10 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.text.*;
 import java.util.*;
 
 
@@ -39,11 +36,12 @@ public class ImportInvoiceFromBW extends ActionExecuterAbstractBase {
     private static Log logger = LogFactory.getLog(ImportInvoiceFromBW.class);
 
     private final String BW_QNAME = "http://www.alfresco.com/model/brainware/1.0";
-    private final NodeRef xmlMappingNodeRef = new NodeRef("workspace://SpacesStore/89661fdc-7fe3-4c0b-a6cf-7bd6600bb920");
+//    private final NodeRef xmlMappingNodeRef = new NodeRef("workspace://SpacesStore/89661fdc-7fe3-4c0b-a6cf-7bd6600bb920");
 
     private FileFolderService fileFolderService;
     private MimetypeService mimetypeService;
     private NodeService nodeService;
+    private String xmlMappingNode;
 
 
 
@@ -54,6 +52,7 @@ public class ImportInvoiceFromBW extends ActionExecuterAbstractBase {
     @Override
     protected void executeImpl(Action action, NodeRef actionedUponNodeRef) {
 
+            NodeRef xmlMappingNodeRef = new NodeRef(xmlMappingNode);
             FileInfo currentDocument = fileFolderService.getFileInfo(actionedUponNodeRef);
             FileInfo xmlMapping = fileFolderService.getFileInfo(xmlMappingNodeRef);
 
@@ -125,7 +124,8 @@ public class ImportInvoiceFromBW extends ActionExecuterAbstractBase {
     }
 
     private Date formatDate(String date) {
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
+        String pattern = "yyyy-MM-dd";
+        DateFormat dateFormat =  new SimpleDateFormat(pattern);
         try {
             return dateFormat.parse(date);
         }
@@ -231,5 +231,9 @@ public class ImportInvoiceFromBW extends ActionExecuterAbstractBase {
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
+    }
+
+    public void setXmlMappingNode(String xmlMappingNode) {
+        this.xmlMappingNode = xmlMappingNode;
     }
 }

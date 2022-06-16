@@ -8,7 +8,6 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,22 +18,23 @@ public class SendInvoiceToBW extends ActionExecuterAbstractBase {
     private static Log logger = LogFactory.getLog(SendInvoiceToBW.class);
     private FileFolderService fileFolderService;
     private NodeService nodeService;
+    private String exportFolder;
 
-    private final NodeRef exportFolder = new NodeRef("workspace://SpacesStore/b2798654-3cd2-44d8-bd2e-9996410a274a");
+//    private final NodeRef exportFolder = new NodeRef("workspace://SpacesStore/b2798654-3cd2-44d8-bd2e-9996410a274a");
 
     @Override
     protected void executeImpl(Action action, NodeRef nodeRef) {
 
         FileInfo currentDocument = fileFolderService.getFileInfo(nodeRef);
 
+        NodeRef exportFolderNodeRef = new NodeRef(exportFolder);
         try {
-            if ( nodeService.getType(currentDocument.getNodeRef())
-                    .compareTo(QName.createQName("http://www.alfresco.com/model/brainware/1.0)INVOICE")) != 0  ) {
-                fileFolderService.copy(currentDocument.getNodeRef(), exportFolder, nodeRef.getId());
-            }
+            String currentName = currentDocument.getName();
+            int extensionPos = currentName.lastIndexOf('.');
+            String extension = currentName.substring(extensionPos);
+            fileFolderService.copy(currentDocument.getNodeRef(), exportFolderNodeRef, nodeRef.getId()+extension);
 
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             logger.error("Document not found: " + currentDocument.getName(), e);
         }
 
@@ -59,5 +59,9 @@ public class SendInvoiceToBW extends ActionExecuterAbstractBase {
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
+    }
+
+    public void setExportFolder(String exportFolder) {
+        this.exportFolder = exportFolder;
     }
 }
